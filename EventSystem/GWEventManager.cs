@@ -21,16 +21,16 @@ public class GWEventManager : MonoBehaviour
     public static event Action<GameEvent> level_start_event;
     public static event Action<GameEvent> reinit_managers_event;
     public static event Action<GameEvent> blend_out_event;
+    public static event Action<GameEvent> settings_event;
 #endregion
 #region in_game_events
     public static event Action<GameEvent> grounded_event;
-    //public static event Action<GameEvent> jump_event;
     public static event Action<GameEvent> dying_event;
-    public static event Action<GameEvent> speechbubble_event;
     public static event Action<GameEvent> textbox_event;
     public static event Action<GameEvent> activate_trap_event;
     public static event Action<GameEvent> lost_game_event;
     public static event Action<GameEvent> start_new_game_event;
+    public static event Action<GameEvent> xp_event;
     #endregion
 
     private void Awake()
@@ -84,12 +84,6 @@ public class GWEventManager : MonoBehaviour
                     grounded_event(new_game_event);
                 }
                 break;
-            /*case GWCon.JUMP_EVENT_TAG:
-                if(jump_event != null)
-                {
-                    jump_event(new_game_event);
-                }
-                break;*/
             case GWCon.DYING_EVENT_TAG:
                 if(dying_event != null)
                 {
@@ -112,12 +106,6 @@ public class GWEventManager : MonoBehaviour
                 if (change_menu_event != null)
                 {
                     change_menu_event(new_game_event);
-                }
-                break;
-            case GWCon.SPEECH_BUBBLE_EVENT_TAG:
-                if (speechbubble_event != null)
-                {
-                    speechbubble_event(new_game_event);
                 }
                 break;
             case GWCon.TEXT_BOX_EVENT_TAG:
@@ -148,6 +136,18 @@ public class GWEventManager : MonoBehaviour
                 if (blend_out_event != null)
                 {
                     blend_out_event(new_game_event);
+                }
+                break;
+            case GWCon.XP_EVENT_TAG:
+                if (xp_event != null)
+                {
+                    xp_event(new_game_event);
+                }
+                break;
+            case GWCon.SETTINGS_EVENT_TAG:
+                if (settings_event != null)
+                {
+                    settings_event(new_game_event);
                 }
                 break;
             default:

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GWTools : MonoBehaviour
+public class ObjectId : MonoBehaviour
 {
-
+    [SerializeField] public int id;
 }

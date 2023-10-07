@@ -18,18 +18,14 @@ public class GWStateManager : MonoBehaviour
     public static bool swimming;
     public static bool respawning;
     public static bool cancel_jumping;
-    public static bool uhitdangerous;
     public static bool dying;
     public static bool interrupted;
-    public static bool text_box_active;
     public static int current_text_box_id;
     public static bool writing_text;
     public static bool selection_box;
-    public static bool multi_lives_unlocked;
     public static int lives;
-    public static int start_lives = 10;
-    public static bool not_started_once;
-    public static bool looking_left;
+    public static int start_lives = 1;
+
 #endregion
 
     private void Awake()
@@ -49,14 +45,11 @@ public class GWStateManager : MonoBehaviour
         swimming = false;
         respawning = false;
         cancel_jumping = false;
-        uhitdangerous = false;
         dying = false;
         interrupted = false;
-        text_box_active = false;
         managers_reinited = true;
         writing_text = false;
         selection_box = false;
         current_menu = "";
-        looking_left = false;
     }
 }

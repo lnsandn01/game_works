@@ -62,10 +62,6 @@ public class GWControlsManager : MonoBehaviour
     }
 
     public static bool touchesLayer(string layer_name, GameObject obj) {
-        if (!GWStateManager.level_started)
-        {
-            return false;
-        }
         LayerMask layermask = 1 << LayerMask.NameToLayer(layer_name);
         if(layermask.value == -1)
         {
@@ -74,10 +70,12 @@ public class GWControlsManager : MonoBehaviour
         }
         Array colliders = obj.GetComponents<Collider2D>();
         Rigidbody2D rigidb = obj.GetComponent<Rigidbody2D>();
-        bool touches = false, boxcol = false, circlecol = false;
+        bool touches = false, boxcol = false, circlecol = false, capsulecol = false;
         float radius = 0f;
-        Vector2 topLeftPoint, bottomLeftPoint, bottomRightPoint, circleCenterPoint;
-        topLeftPoint = bottomLeftPoint = bottomRightPoint = circleCenterPoint = new Vector2(0, 0);
+        Vector2 topLeftPoint, bottomLeftPoint, bottomRightPoint, circleCenterPoint, capsuleCenterPoint, capsuleSize;
+        topLeftPoint = bottomLeftPoint = bottomRightPoint = circleCenterPoint = capsuleCenterPoint = capsuleSize = new Vector2(0, 0);
+        CapsuleDirection2D capsuleDirection = default(CapsuleDirection2D);
+
         foreach (Collider2D collider in colliders)
         {
             if(collider is BoxCollider2D)
@@ -96,6 +94,13 @@ public class GWControlsManager : MonoBehaviour
                 circleCenterPoint = new Vector2(collider.bounds.center.x, collider.bounds.center.y);
                 radius = ((CircleCollider2D)collider).radius;
             }
+            if(collider is CapsuleCollider2D)
+            {
+                capsulecol = true;
+                capsuleCenterPoint = new Vector2(collider.bounds.center.x, collider.bounds.center.y);
+                capsuleSize = ((CapsuleCollider2D)collider).size;
+                capsuleDirection = ((CapsuleCollider2D)collider).direction;
+            }
         }
 
         switch (layer_name)
@@ -106,31 +111,43 @@ public class GWControlsManager : MonoBehaviour
                 {
                     touches = Physics2D.OverlapArea(bottomLeftPoint + new Vector2(0.05f, 0f), bottomRightPoint - new Vector2(0.05f, 0.1f), layermask);
                 }
+                if (capsulecol)
+                {
+                    touches = Physics2D.OverlapCapsule(capsuleCenterPoint, capsuleSize, capsuleDirection, 0, layermask);
+                }
                 
-                if (touches && rigidb.velocity.y <= 0.2f)
+                if (rigidb)
                 {
-                    touches = true;
+                    if (touches && rigidb.velocity.y <= 0.2f)
+                    {
+                        touches = true;
+                    }
+                    else
+                    {
+                        touches = false;
+                    }
                 }
-                else
-                {
-                    touches = false;
-                }
-                if (obj.name == "Seni")
+
+                if (obj.name == "Player")
                 {
                     GWStateManager.grounded = touches;
                 }
                 break;
             case GWCon.WATER_LAYER:
-                if (obj.name == "Seni")
+                if (boxcol)
                 {
-                    if (boxcol)
-                    {
-                        touches = Physics2D.OverlapArea(topLeftPoint, bottomRightPoint + new Vector2(0, 0.1f), layermask);
-                    }
-                    if (circlecol)
-                    {
-                        touches = touches || Physics2D.OverlapCircle(circleCenterPoint, radius, layermask);
-                    }
+                    touches = Physics2D.OverlapArea(topLeftPoint, bottomRightPoint + new Vector2(0, 0.1f), layermask);
+                }
+                if (circlecol)
+                {
+                    touches = touches || Physics2D.OverlapCircle(circleCenterPoint, radius, layermask);
+                }
+                if (capsulecol)
+                {
+                    touches = touches || Physics2D.OverlapCapsule(capsuleCenterPoint, capsuleSize, capsuleDirection, 0, layermask);
+                }
+                if (obj.name == "Player")
+                {
                     GWStateManager.swimming = touches;
                 }
                 break;
@@ -144,4 +161,5 @@ public class GWControlsManager : MonoBehaviour
 
         return touches;
     }
+}
 }

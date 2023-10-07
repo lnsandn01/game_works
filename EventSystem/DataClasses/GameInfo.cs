@@ -3,10 +3,8 @@ using UnityEngine;
 [System.Serializable]
 public class GameInfo
 {
-    public bool more_lifes_unlocked { get; set; }
     public uint xp { get; set; }
-    public ushort lifes { get; set; }
-    public ushort lvl_reached { get; set;}
-    public List<double> time_needed { get; set; }
-    public uint deaths { get; set; }
+    public ushort lives { get; set; }
+    public ushort volume { get; set; }
+    public ushort language { get; set; } // 0: English, 1: German, ...
 }

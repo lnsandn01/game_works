@@ -1,0 +1,16 @@
+using System;
+[Serializable]
+
+public class SettingsEventValue
+{
+    public string setting_name { get; set; }
+    public bool toggle { get; set; }
+    public int value { get; set; }
+
+    public SettingsEventValue(string setting_name, bool toggle, int value)
+    {
+        this.setting_name = setting_name;
+        this.toggle = toggle;
+        this.value = value;
+    }
+}

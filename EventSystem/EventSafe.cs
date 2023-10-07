@@ -18,6 +18,10 @@ public class EventSafe : MonoBehaviour
     {
         {"testeventloop",1}
     };
+    public static Dictionary<string, ushort> dict_player_events = new Dictionary<string, ushort>()
+    {
+        {"gained_xp", GWCon.XP_EVENT_TAG},
+    };
     public static Dictionary<string, ushort> dict_controler_events = new Dictionary<string, ushort>()
     { };
     public static Dictionary<string, ushort> dict_player_events = new Dictionary<string, ushort>()
@@ -29,7 +33,14 @@ public class EventSafe : MonoBehaviour
 
     void Awake()
     {
+        game_info.lifes = 1;
+        game_info.xp = 1;
+        game_info.volume = 8;
+        game_info.language = 0;
         loadCache();
+        GWEventManager.xp_event += appendList;
+        GWEventManager.settings_event += appendList;
+        GWEventManager.scene_event += appendList;
     }
 
     private void loadCache()
@@ -48,6 +59,7 @@ public class EventSafe : MonoBehaviour
                 Debug.Log(e.Message);
                 file.Close();
             }
+            loadValues();
         }
         else
         {
@@ -105,6 +117,17 @@ public class EventSafe : MonoBehaviour
             }
         }
     }
+
+    private void loadValues()
+    {
+        // update state manager values
+        GWStateManager.lives = (ushort)GWGameManager.livesPerXp(game_info.xp);
+        GWStateManager.start_lives = (ushort)GWGameManager.livesPerXp(game_info.xp);
+        GWStateManager.xp = game_info.xp;
+        GWStateManager.volume = game_info.volume;
+        GWStateManager.language = game_info.language;
+    }
+
     private static void updateCache(GameEvent new_game_event, GameInfo new_game_info = null)
     {
         BinaryFormatter bf = new BinaryFormatter();
@@ -261,11 +284,37 @@ public class EventSafe : MonoBehaviour
         {
             new_game_event.order_id = player_events.Count;
             player_events.Add(new_game_event);
+            switch (new_game_event.tag)
+            {
+                case 19:
+                    update_game_info = true;
+                    game_info.xp += (uint)new_game_event.value;
+                    game_info.lifes = (ushort)GWGameManager.livesPerXp(game_info.xp);
+                    break;
+            }
         }
         else if (dict_sound_events.ContainsValue(new_game_event.tag))
         {
             new_game_event.order_id = sound_events.Count;
             sound_events.Add(new_game_event);
+        }
+        else if (dict_settng_events.ContainsValue(new_game_event.tag))
+        {
+            switch (new_game_event.tag)
+            {
+                case 20:
+                    update_game_info = true;
+                    switch(((SettingsEventValue)new_game_event.value).setting_name)
+                    {
+                        case "AdjustVolume":
+                            game_info.volume = GWStateManager.volume;
+                            break;
+                        case "ChangeLanguage":
+                            game_info.language = GWStateManager.language;
+                            break;
+                    }
+                    break;
+            }
         }
         else
         {

@@ -1,13 +1,13 @@
 # game_works
  ## Event driven framework for making games in Unity
  
- **!Warning!** Work in progress, this needs to be cleaned up first and made into a proper framework, but it is already usable.<br>
+ **!Warning!** Work in progress, much more documentation needs to be written, but the framework is already usable.<br>
  
 ## What it is
 
 A framework as a base for your unity game. This will let you make a clean and modular game without creating spaghetti code.<br>
 The framework uses the unity event system, and lets your game objects and code communicate efficiently with events.<br>
-Add the event system classes to an object in your first scene of the game, and they will run and stay alive, throughout scene/level changes.<br>
+Add the event system classes to an object in your first scene of the game, with the SystemObject script, and they will run and stay alive throughout scene/level changes.<br>
 They manage **communication, scene changes, constants, states of the game, controls and storing progress or anything in cache.**<br>
 
 
@@ -17,4 +17,9 @@ I want to add more and more basic functions, that are often used in games, as I 
 
 ## Setup
 
-**This section will be added as soon as I have cleaned up the code**
+Add the event system classes to an object in your first scene of the game, with the SystemObject script, and they will run and stay alive throughout scene/level changes.<br>
+For an example on how to listen and send events, have a look at the ObjectScripts/InGame/TriggerZone.cs file.<br>
+Have a look at the EventSystem/EventSafe.cs file on how you can safe and access events.<br>
+If you want to add your own events with their own data, check out the EventSystem/GWEventManager.cs and EventSystem/GWConstManager.cs files and the EventSystem/DataClasses/EventValues folder.<br>
+Constants are stored in EventSystem/GWConstManager.cs, and other global variables or the global state, in EventSystem/GWStateManager.cs<br>
+You can find many usefull files for your game in the ObjectScripts folder.<br>
